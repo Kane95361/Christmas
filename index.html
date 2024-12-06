@@ -6,14 +6,16 @@
   <title>Christmas Wonderland - Home</title>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;700&family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
+    /* General Body Styling */
     body {
-      background: url('https://i.imgur.com/EyLQF4M.jpg') no-repeat center center fixed; /* Christmas snowy village background */
+      background: url('https://i.imgur.com/EyLQF4M.jpg') no-repeat center center fixed; /* Christmas house with snow background */
       background-size: cover;
       color: white;
       font-family: 'Raleway', sans-serif;
       margin: 0;
       padding: 0;
     }
+
     h1 {
       font-family: 'Great Vibes', cursive;
       font-size: 4rem;
@@ -21,6 +23,8 @@
       margin-top: 20px;
       text-align: center;
     }
+
+    /* Navbar */
     .navbar {
       background: rgba(0, 0, 0, 0.5);
       padding: 15px;
@@ -37,24 +41,8 @@
     .navbar a:hover {
       color: #f39c12;
     }
-    .images {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 40px;
-      margin: 30px 0;
-    }
-    .images img {
-      width: 300px;
-      height: auto;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #fff, 0 0 40px #ff0000;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .images img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 40px #fff, 0 0 60px #00ff00;
-    }
+
+    /* Countdown Timer */
     .countdown {
       font-size: 2rem;
       margin: 20px auto;
@@ -65,27 +53,51 @@
       width: fit-content;
       box-shadow: 0 0 20px #fff;
     }
+
+    /* Snowfall Effect */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      font-size: 1em;
+      color: white;
+      animation: fall 10s linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100vh); }
+    }
+
+    /* Footer Styling */
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
+  <!-- Snowfall -->
+  <div id="snow-container"></div>
+
   <!-- Navbar -->
   <div class="navbar">
     <a href="index.html">Home</a>
-    <a href="shop.html">Shop</a>
     <a href="games.html">Games</a>
+    <a href="shop.html">Shop</a>
     <a href="contact.html">Contact</a>
   </div>
 
+  <!-- Welcome Section -->
   <h1>Welcome to Christmas Wonderland!</h1>
-
-  <!-- Images -->
-  <div class="images">
-    <img src="A_detailed_and_heartwarming_depiction_of_Santa_Cla.png" alt="Santa Claus">
-    <img src="A_whimsical_and_detailed_depiction_of_a_green,_mis.png" alt="Grinch">
-  </div>
-
-  <!-- Countdown Timer -->
   <div class="countdown" id="countdown">Loading countdown...</div>
+
+  <footer>
+    Made with ❤️ for Christmas 2024
+  </footer>
 
   <script>
     // Countdown Timer
@@ -108,28 +120,20 @@
         `${days} Days ${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
     }
     setInterval(updateCountdown, 1000);
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Christmas Wonderland - Shop</title>
-  <style>
-    /* Similar to index.html for consistency */
-  </style>
-</head>
-<body>
-  <div class="navbar">
-    <a href="index.html">Home</a>
-    <a href="shop.html">Shop</a>
-    <a href="games.html">Games</a>
-    <a href="contact.html">Contact</a>
-  </div>
 
-  <h1>Shop for the Holidays!</h1>
-  <!-- Add shop content -->
+    // Snowfall Effect
+    const snowContainer = document.getElementById('snow-container');
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.style.left = Math.random() * window.innerWidth + 'px';
+      snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+      snowflake.innerText = '❄';
+      snowContainer.appendChild(snowflake);
+
+      setTimeout(() => snowflake.remove(), 10000);
+    }
+    setInterval(createSnowflake, 200);
+  </script>
 </body>
 </html>
