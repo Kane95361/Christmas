@@ -3,137 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Christmas Wonderland - Home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <title>Christmas Wonderland</title>
   <style>
-    /* General Body Styling */
+    /* General Styling */
     body {
-      background: url('https://i.imgur.com/EyLQF4M.jpg') no-repeat center center fixed; /* Christmas house with snow background */
-      background-size: cover;
-      color: white;
-      font-family: 'Raleway', sans-serif;
       margin: 0;
       padding: 0;
+      background: url('data:image/png;base64,[BASE64_GINGERBREAD]') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: white;
     }
 
-    h1 {
-      font-family: 'Great Vibes', cursive;
-      font-size: 4rem;
-      text-shadow: 3px 3px 5px #000;
+    h1, h2 {
+      text-align: center;
       margin-top: 20px;
-      text-align: center;
+      text-shadow: 2px 2px 4px #000;
     }
 
-    /* Navbar */
+    /* Navbar Styling */
     .navbar {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 15px;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      position: sticky;
+      top: 0;
     }
+
     .navbar a {
       color: white;
       text-decoration: none;
-      margin: 0 15px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      transition: color 0.3s;
+      padding: 10px 20px;
+      font-size: 18px;
+      transition: background 0.3s;
     }
+
     .navbar a:hover {
-      color: #f39c12;
+      background: rgba(255, 255, 255, 0.2);
     }
 
-    /* Countdown Timer */
-    .countdown {
-      font-size: 2rem;
+    /* Game Section */
+    #gameContainer {
+      position: relative;
+      width: 80%;
+      height: 400px;
+      background: rgba(0, 0, 0, 0.7);
+      overflow: hidden;
       margin: 20px auto;
-      background: rgba(255, 255, 255, 0.9);
-      color: #001f54;
-      padding: 20px;
-      border-radius: 15px;
-      width: fit-content;
-      box-shadow: 0 0 20px #fff;
+      border-radius: 10px;
     }
 
-    /* Snowfall Effect */
-    .snowflake {
-      position: fixed;
-      top: -10px;
-      font-size: 1em;
-      color: white;
-      animation: fall 10s linear infinite;
-    }
-    @keyframes fall {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(100vh); }
+    #santa {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: auto;
     }
 
-    /* Footer Styling */
-    footer {
+    .gift {
+      position: absolute;
+      top: -50px;
+      width: 50px;
+      height: auto;
+    }
+
+    #score {
       text-align: center;
-      padding: 10px;
-      background: rgba(0, 0, 0, 0.6);
-      color: white;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
+      font-size: 24px;
+      margin: 10px 0;
     }
   </style>
 </head>
 <body>
-  <!-- Snowfall -->
-  <div id="snow-container"></div>
-
   <!-- Navbar -->
   <div class="navbar">
-    <a href="index.html">Home</a>
-    <a href="games.html">Games</a>
-    <a href="shop.html">Shop</a>
-    <a href="contact.html">Contact</a>
+    <a href="#home">Home</a>
+    <a href="#games">Games</a>
+    <a href="#shop">Shop</a>
   </div>
 
   <!-- Welcome Section -->
-  <h1>Welcome to Christmas Wonderland!</h1>
-  <div class="countdown" id="countdown">Loading countdown...</div>
+  <section id="home">
+    <h1>Welcome to Christmas Wonderland!</h1>
+    <p style="text-align: center;">
+      Experience the joy of Christmas with games, a festive shop, and holiday cheer all in one place.
+    </p>
+  </section>
 
-  <footer>
-    Made with ❤️ for Christmas 2024
-  </footer>
+  <!-- Games Section -->
+  <section id="games">
+    <h2>Games</h2>
+    <div id="gameContainer">
+      <img id="santa" src="data:image/png;base64,[BASE64_SANTA]" alt="Santa">
+      <div id="score">Score: 0</div>
+    </div>
+  </section>
 
   <script>
-    // Countdown Timer
-    function updateCountdown() {
-      const christmas = new Date('December 25, 2024').getTime();
-      const now = new Date().getTime();
-      const diff = christmas - now;
+    // Game Variables
+    const gameContainer = document.getElementById('gameContainer');
+    const santa = document.getElementById('santa');
+    const scoreDisplay = document.getElementById('score');
+    let santaX = gameContainer.offsetWidth / 2 - 40; // Center Santa
+    let score = 0;
+    const gifts = [];
+    const santaSpeed = 20;
+    const giftSpeed = 4;
 
-      if (diff <= 0) {
-        document.getElementById('countdown').innerText = "Merry Christmas!";
-        return;
+    // Set Santa's initial position
+    santa.style.left = `${santaX}px`;
+
+    // Keyboard controls
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft' && santaX > 0) {
+        santaX -= santaSpeed;
+      } else if (event.key === 'ArrowRight' && santaX < gameContainer.offsetWidth - 80) {
+        santaX += santaSpeed;
       }
+      santa.style.left = `${santaX}px`;
+    });
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      document.getElementById('countdown').innerText =
-        `${days} Days ${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
+    // Spawn a new gift
+    function spawnGift() {
+      const gift = document.createElement('img');
+      gift.src = 'data:image/png;base64,[BASE64_GIFT]'; // Replace with a base64-encoded image of a gift
+      gift.classList.add('gift');
+      gift.style.left = `${Math.random() * (gameContainer.offsetWidth - 50)}px`;
+      gameContainer.appendChild(gift);
+      gifts.push(gift);
     }
-    setInterval(updateCountdown, 1000);
 
-    // Snowfall Effect
-    const snowContainer = document.getElementById('snow-container');
-    function createSnowflake() {
-      const snowflake = document.createElement('div');
-      snowflake.classList.add('snowflake');
-      snowflake.style.left = Math.random() * window.innerWidth + 'px';
-      snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
-      snowflake.innerText = '❄';
-      snowContainer.appendChild(snowflake);
+    // Update game elements
+    function updateGame() {
+      for (let i = 0; i < gifts.length; i++) {
+        const gift = gifts[i];
+        const giftTop = parseInt(gift.style.top || '-50') + giftSpeed;
+        gift.style.top = `${giftTop}px`;
 
-      setTimeout(() => snowflake.remove(), 10000);
+        // Check collision with Santa
+        const giftRect = gift.getBoundingClientRect();
+        const santaRect = santa.getBoundingClientRect();
+
+        if (
+          giftRect.bottom > santaRect.top &&
+          giftRect.top < santaRect.bottom &&
+          giftRect.right > santaRect.left &&
+          giftRect.left < santaRect.right
+        ) {
+          // Collision detected
+          gifts.splice(i, 1);
+          gameContainer.removeChild(gift);
+          score += 10;
+          scoreDisplay.textContent = `Score: ${score}`;
+          continue;
+        }
+
+        // Remove gift if it falls out of bounds
+        if (giftTop > gameContainer.offsetHeight) {
+          gifts.splice(i, 1);
+          gameContainer.removeChild(gift);
+        }
+      }
     }
-    setInterval(createSnowflake, 200);
+
+    // Main game loop
+    setInterval(() => {
+      updateGame();
+      if (Math.random() < 0.03) {
+        spawnGift();
+      }
+    }, 50);
   </script>
 </body>
 </html>
+
