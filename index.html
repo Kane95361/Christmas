@@ -3,180 +3,176 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Christmas Wonderland</title>
+  <title>Christmas Memory Game</title>
   <style>
-    /* General Styling */
     body {
       margin: 0;
       padding: 0;
-      background: url('data:image/png;base64,[BASE64_GINGERBREAD]') no-repeat center center fixed;
+      background-image: url('https://www.wallpaperflare.com/static/355/947/752/snow-tree-christmas-snowflakes-wallpaper.jpg');
       background-size: cover;
+      background-position: center;
       font-family: Arial, sans-serif;
       color: white;
-    }
-
-    h1, h2 {
       text-align: center;
-      margin-top: 20px;
-      text-shadow: 2px 2px 4px #000;
     }
 
-    /* Navbar Styling */
-    .navbar {
+    h1 {
+      font-size: 3em;
+      margin-top: 50px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+
+    .game-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      justify-content: center;
+      margin-top: 40px;
+      width: 60%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card {
+      width: 100px;
+      height: 100px;
+      background-color: #008B8B;
+      border-radius: 10px;
+      cursor: pointer;
       display: flex;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px;
-      position: sticky;
-      top: 0;
+      align-items: center;
+      font-size: 2em;
+      color: transparent;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s;
     }
 
-    .navbar a {
+    .card.flipped {
       color: white;
+      background-color: #FF6347;
+    }
+
+    .card.matched {
+      background-color: #32CD32;
+      pointer-events: none;
+    }
+
+    .scoreboard {
+      font-size: 1.5em;
+      margin-top: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+
+    .christmas-link {
+      margin-top: 30px;
+      font-size: 1.2em;
+      color: #FF6347;
       text-decoration: none;
+      border: 2px solid #FF6347;
       padding: 10px 20px;
-      font-size: 18px;
-      transition: background 0.3s;
+      border-radius: 5px;
+      background-color: #FF6347;
+      transition: background-color 0.3s;
     }
 
-    .navbar a:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    /* Game Section */
-    #gameContainer {
-      position: relative;
-      width: 80%;
-      height: 400px;
-      background: rgba(0, 0, 0, 0.7);
-      overflow: hidden;
-      margin: 20px auto;
-      border-radius: 10px;
-    }
-
-    #santa {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: auto;
-    }
-
-    .gift {
-      position: absolute;
-      top: -50px;
-      width: 50px;
-      height: auto;
-    }
-
-    #score {
-      text-align: center;
-      font-size: 24px;
-      margin: 10px 0;
+    .christmas-link:hover {
+      background-color: #FF4500;
     }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <div class="navbar">
-    <a href="#home">Home</a>
-    <a href="#games">Games</a>
-    <a href="#shop">Shop</a>
+  <h1>Christmas Memory Game</h1>
+
+  <div class="game-container" id="gameContainer">
+    <!-- Cards will be dynamically added here -->
   </div>
 
-  <!-- Welcome Section -->
-  <section id="home">
-    <h1>Welcome to Christmas Wonderland!</h1>
-    <p style="text-align: center;">
-      Experience the joy of Christmas with games, a festive shop, and holiday cheer all in one place.
-    </p>
-  </section>
+  <div class="scoreboard">
+    <span>Matches: <span id="matchCount">0</span></span>
+  </div>
 
-  <!-- Games Section -->
-  <section id="games">
-    <h2>Games</h2>
-    <div id="gameContainer">
-      <img id="santa" src="data:image/png;base64,[BASE64_SANTA]" alt="Santa">
-      <div id="score">Score: 0</div>
-    </div>
-  </section>
+  <a href="https://www.kingofchristmas.com/collections/artificial-christmas-trees?srsltid=AfmBOorslaWEawW9BGH7LhvVcGQoh57dxrTD0xz6zwrXB7OvrlqB4tr6" class="christmas-link" target="_blank">Check out amazing Christmas Trees!</a>
 
   <script>
-    // Game Variables
-    const gameContainer = document.getElementById('gameContainer');
-    const santa = document.getElementById('santa');
-    const scoreDisplay = document.getElementById('score');
-    let santaX = gameContainer.offsetWidth / 2 - 40; // Center Santa
-    let score = 0;
-    const gifts = [];
-    const santaSpeed = 20;
-    const giftSpeed = 4;
+    const cards = [
+      { id: 1, value: "🎄" },
+      { id: 2, value: "🎅" },
+      { id: 3, value: "⛄" },
+      { id: 4, value: "🎁" },
+      { id: 5, value: "🌟" },
+      { id: 6, value: "❄️" },
+      { id: 7, value: "🎄" },
+      { id: 8, value: "🎅" },
+      { id: 9, value: "⛄" },
+      { id: 10, value: "🎁" },
+      { id: 11, value: "🌟" },
+      { id: 12, value: "❄️" }
+    ];
 
-    // Set Santa's initial position
-    santa.style.left = `${santaX}px`;
+    let flippedCards = [];
+    let matchedCount = 0;
 
-    // Keyboard controls
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowLeft' && santaX > 0) {
-        santaX -= santaSpeed;
-      } else if (event.key === 'ArrowRight' && santaX < gameContainer.offsetWidth - 80) {
-        santaX += santaSpeed;
-      }
-      santa.style.left = `${santaX}px`;
-    });
-
-    // Spawn a new gift
-    function spawnGift() {
-      const gift = document.createElement('img');
-      gift.src = 'data:image/png;base64,[BASE64_GIFT]'; // Replace with a base64-encoded image of a gift
-      gift.classList.add('gift');
-      gift.style.left = `${Math.random() * (gameContainer.offsetWidth - 50)}px`;
-      gameContainer.appendChild(gift);
-      gifts.push(gift);
+    function shuffleCards() {
+      return cards.sort(() => Math.random() - 0.5);
     }
 
-    // Update game elements
-    function updateGame() {
-      for (let i = 0; i < gifts.length; i++) {
-        const gift = gifts[i];
-        const giftTop = parseInt(gift.style.top || '-50') + giftSpeed;
-        gift.style.top = `${giftTop}px`;
+    function createCard(card) {
+      const cardElement = document.createElement("div");
+      cardElement.classList.add("card");
+      cardElement.setAttribute("data-id", card.id);
+      cardElement.setAttribute("data-value", card.value);
+      cardElement.addEventListener("click", flipCard);
+      return cardElement;
+    }
 
-        // Check collision with Santa
-        const giftRect = gift.getBoundingClientRect();
-        const santaRect = santa.getBoundingClientRect();
+    function flipCard() {
+      const card = this;
+      if (flippedCards.length < 2 && !card.classList.contains("flipped") && !card.classList.contains("matched")) {
+        card.classList.add("flipped");
+        card.textContent = card.getAttribute("data-value");
+        flippedCards.push(card);
 
-        if (
-          giftRect.bottom > santaRect.top &&
-          giftRect.top < santaRect.bottom &&
-          giftRect.right > santaRect.left &&
-          giftRect.left < santaRect.right
-        ) {
-          // Collision detected
-          gifts.splice(i, 1);
-          gameContainer.removeChild(gift);
-          score += 10;
-          scoreDisplay.textContent = `Score: ${score}`;
-          continue;
-        }
-
-        // Remove gift if it falls out of bounds
-        if (giftTop > gameContainer.offsetHeight) {
-          gifts.splice(i, 1);
-          gameContainer.removeChild(gift);
+        if (flippedCards.length === 2) {
+          checkMatch();
         }
       }
     }
 
-    // Main game loop
-    setInterval(() => {
-      updateGame();
-      if (Math.random() < 0.03) {
-        spawnGift();
+    function checkMatch() {
+      const [card1, card2] = flippedCards;
+
+      if (card1.getAttribute("data-value") === card2.getAttribute("data-value")) {
+        card1.classList.add("matched");
+        card2.classList.add("matched");
+        flippedCards = [];
+        matchedCount++;
+        document.getElementById("matchCount").textContent = matchedCount;
+        if (matchedCount === cards.length / 2) {
+          alert("You matched all the cards! Great job!");
+        }
+      } else {
+        setTimeout(() => {
+          card1.classList.remove("flipped");
+          card2.classList.remove("flipped");
+          flippedCards = [];
+        }, 1000);
       }
-    }, 50);
+    }
+
+    function startGame() {
+      const shuffledCards = shuffleCards();
+      const gameContainer = document.getElementById("gameContainer");
+
+      shuffledCards.forEach(card => {
+        const cardElement = createCard(card);
+        gameContainer.appendChild(cardElement);
+      });
+    }
+
+    startGame();
   </script>
 </body>
 </html>
+
 
