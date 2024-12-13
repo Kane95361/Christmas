@@ -1,125 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Christmas Fun Games</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
-      text-align: center;
-      padding: 20px;
-      background-image: url('https://example.com/christmas-background.jpg'); /* Add your background image URL here */
-      background-size: cover;
-    }
-
-    h1 {
-      color: red;
-      font-size: 3em;
-    }
-
-    .game-container {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 30px;
-    }
-
-    .game {
-      width: 300px;
-      height: 200px;
-      background-color: white;
-      border: 2px solid #008000;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin: 20px;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .game iframe {
-      width: 100%;
-      height: 100%;
-    }
-
-    .calendar {
-      margin-top: 50px;
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: inline-block;
-      text-align: left;
-    }
-
-    .calendar h2 {
-      color: green;
-    }
-
-    #countdown {
-      font-size: 1.5em;
-      color: red;
-    }
-
-    .footer {
-      margin-top: 40px;
-      font-size: 1em;
-      color: white;
-    }
-
-    .footer a {
-      color: #008000;
-      text-decoration: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Countdown</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('gingerbread-town.jpg') no-repeat center center/cover;
+            font-family: Arial, sans-serif;
+        }
+        #countdown {
+            color: white;
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
+    <div id="countdown">Loading countdown...</div>
 
-  <h1>Christmas Fun Games!</h1>
+    <script>
+        function updateCountdown() {
+            const now = new Date();
+            const christmas = new Date(now.getFullYear(), 11, 25); // December 25th
 
-  <!-- Game Selection -->
-  <div class="game-container">
-    <div class="game">
-      <h3>Air Hockey</h3>
-      <iframe src="https://www.miniclip.com/games/air-hockey-multiplayer/en/" frameborder="0"></iframe>
-    </div>
-    <div class="game">
-      <h3>Christmas Countdown Calendar</h3>
-      <div class="calendar">
-        <h2>Countdown to Christmas:</h2>
-        <div id="countdown"></div>
-      </div>
-    </div>
-  </div>
+            if (now > christmas) {
+                christmas.setFullYear(christmas.getFullYear() + 1);
+            }
 
-  <div class="footer">
-    <p>Enjoy your festive games and don't forget to check the calendar for the days until Christmas!</p>
-    <p>Visit more games at <a href="https://www.miniclip.com" target="_blank">Miniclip</a></p>
-  </div>
+            const diff = christmas - now;
 
-  <script>
-    // Christmas Countdown Script
-    const countdownElement = document.getElementById('countdown');
-    const christmasDate = new Date("December 25, 2024 00:00:00").getTime();
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const timeLeft = christmasDate - now;
+            document.getElementById('countdown').innerText = 
+                `${days} Days, ${hours} Hours, ${minutes} Minutes, ${seconds} Seconds until Christmas!`;
+        }
 
-      if (timeLeft <= 0) {
-        countdownElement.innerHTML = "Merry Christmas!";
-      } else {
-        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-        countdownElement.innerHTML = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds left!`;
-      }
-    }
-
-    setInterval(updateCountdown, 1000);
-  </script>
-
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
 </body>
 </html>
