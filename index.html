@@ -3,176 +3,123 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Christmas Memory Game</title>
+  <title>Christmas Fun Games</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background-image: url('https://www.wallpaperflare.com/static/355/947/752/snow-tree-christmas-snowflakes-wallpaper.jpg');
-      background-size: cover;
-      background-position: center;
       font-family: Arial, sans-serif;
-      color: white;
+      background-color: #f8f8f8;
       text-align: center;
+      padding: 20px;
+      background-image: url('https://example.com/christmas-background.jpg'); /* Add your background image URL here */
+      background-size: cover;
     }
 
     h1 {
+      color: red;
       font-size: 3em;
-      margin-top: 50px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
     }
 
     .game-container {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      justify-content: center;
-      margin-top: 40px;
-      width: 60%;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .card {
-      width: 100px;
-      height: 100px;
-      background-color: #008B8B;
-      border-radius: 10px;
-      cursor: pointer;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2em;
-      color: transparent;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s;
-    }
-
-    .card.flipped {
-      color: white;
-      background-color: #FF6347;
-    }
-
-    .card.matched {
-      background-color: #32CD32;
-      pointer-events: none;
-    }
-
-    .scoreboard {
-      font-size: 1.5em;
-      margin-top: 20px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-    }
-
-    .christmas-link {
+      justify-content: space-around;
       margin-top: 30px;
-      font-size: 1.2em;
-      color: #FF6347;
-      text-decoration: none;
-      border: 2px solid #FF6347;
-      padding: 10px 20px;
-      border-radius: 5px;
-      background-color: #FF6347;
-      transition: background-color 0.3s;
     }
 
-    .christmas-link:hover {
-      background-color: #FF4500;
+    .game {
+      width: 300px;
+      height: 200px;
+      background-color: white;
+      border: 2px solid #008000;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .game iframe {
+      width: 100%;
+      height: 100%;
+    }
+
+    .calendar {
+      margin-top: 50px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+      text-align: left;
+    }
+
+    .calendar h2 {
+      color: green;
+    }
+
+    #countdown {
+      font-size: 1.5em;
+      color: red;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 1em;
+      color: white;
+    }
+
+    .footer a {
+      color: #008000;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <h1>Christmas Memory Game</h1>
 
-  <div class="game-container" id="gameContainer">
-    <!-- Cards will be dynamically added here -->
+  <h1>Christmas Fun Games!</h1>
+
+  <!-- Game Selection -->
+  <div class="game-container">
+    <div class="game">
+      <h3>Air Hockey</h3>
+      <iframe src="https://www.miniclip.com/games/air-hockey-multiplayer/en/" frameborder="0"></iframe>
+    </div>
+    <div class="game">
+      <h3>Christmas Countdown Calendar</h3>
+      <div class="calendar">
+        <h2>Countdown to Christmas:</h2>
+        <div id="countdown"></div>
+      </div>
+    </div>
   </div>
 
-  <div class="scoreboard">
-    <span>Matches: <span id="matchCount">0</span></span>
+  <div class="footer">
+    <p>Enjoy your festive games and don't forget to check the calendar for the days until Christmas!</p>
+    <p>Visit more games at <a href="https://www.miniclip.com" target="_blank">Miniclip</a></p>
   </div>
-
-  <a href="https://www.kingofchristmas.com/collections/artificial-christmas-trees?srsltid=AfmBOorslaWEawW9BGH7LhvVcGQoh57dxrTD0xz6zwrXB7OvrlqB4tr6" class="christmas-link" target="_blank">Check out amazing Christmas Trees!</a>
 
   <script>
-    const cards = [
-      { id: 1, value: "🎄" },
-      { id: 2, value: "🎅" },
-      { id: 3, value: "⛄" },
-      { id: 4, value: "🎁" },
-      { id: 5, value: "🌟" },
-      { id: 6, value: "❄️" },
-      { id: 7, value: "🎄" },
-      { id: 8, value: "🎅" },
-      { id: 9, value: "⛄" },
-      { id: 10, value: "🎁" },
-      { id: 11, value: "🌟" },
-      { id: 12, value: "❄️" }
-    ];
+    // Christmas Countdown Script
+    const countdownElement = document.getElementById('countdown');
+    const christmasDate = new Date("December 25, 2024 00:00:00").getTime();
 
-    let flippedCards = [];
-    let matchedCount = 0;
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const timeLeft = christmasDate - now;
 
-    function shuffleCards() {
-      return cards.sort(() => Math.random() - 0.5);
-    }
-
-    function createCard(card) {
-      const cardElement = document.createElement("div");
-      cardElement.classList.add("card");
-      cardElement.setAttribute("data-id", card.id);
-      cardElement.setAttribute("data-value", card.value);
-      cardElement.addEventListener("click", flipCard);
-      return cardElement;
-    }
-
-    function flipCard() {
-      const card = this;
-      if (flippedCards.length < 2 && !card.classList.contains("flipped") && !card.classList.contains("matched")) {
-        card.classList.add("flipped");
-        card.textContent = card.getAttribute("data-value");
-        flippedCards.push(card);
-
-        if (flippedCards.length === 2) {
-          checkMatch();
-        }
-      }
-    }
-
-    function checkMatch() {
-      const [card1, card2] = flippedCards;
-
-      if (card1.getAttribute("data-value") === card2.getAttribute("data-value")) {
-        card1.classList.add("matched");
-        card2.classList.add("matched");
-        flippedCards = [];
-        matchedCount++;
-        document.getElementById("matchCount").textContent = matchedCount;
-        if (matchedCount === cards.length / 2) {
-          alert("You matched all the cards! Great job!");
-        }
+      if (timeLeft <= 0) {
+        countdownElement.innerHTML = "Merry Christmas!";
       } else {
-        setTimeout(() => {
-          card1.classList.remove("flipped");
-          card2.classList.remove("flipped");
-          flippedCards = [];
-        }, 1000);
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        countdownElement.innerHTML = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds left!`;
       }
     }
 
-    function startGame() {
-      const shuffledCards = shuffleCards();
-      const gameContainer = document.getElementById("gameContainer");
-
-      shuffledCards.forEach(card => {
-        const cardElement = createCard(card);
-        gameContainer.appendChild(cardElement);
-      });
-    }
-
-    startGame();
+    setInterval(updateCountdown, 1000);
   </script>
+
 </body>
 </html>
-
-
